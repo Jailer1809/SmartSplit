@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1f6fb">
+  <title>Admin sign in | SmartSplit</title>
+  <link rel="stylesheet" href="styles.css?v=13">
+</head>
+<body>
+  <main class="page-wrap">
+    <section class="auth-shell admin-auth-shell">
+      <a class="brand-lockup" href="index.html" aria-label="SmartSplit home">
+        <div class="brand-mark" aria-hidden="true">S</div>
+        <div><strong>SmartSplit</strong><span>AI-Driven Adaptive Budget Allocation &amp; EMI Vault Management System</span></div>
+      </a>
+      <div class="auth-card admin-auth-card">
+        <div class="auth-intro">
+          <p class="eyebrow">SECURE ADMINISTRATION</p>
+          <h1>Administrator<br><span>sign in.</span></h1>
+          <p>Sign in with the administrator account created for this installation to review verifier requests and manage accounts.</p>
+        </div>
+        <form id="admin-login-form" class="form-stack">
+          <label>Email address<input name="email" type="email" autocomplete="username" required maxlength="254"></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required maxlength="72"></label>
+          <button id="admin-login-submit" class="button primary wide" type="submit" disabled>Sign in as administrator</button>
+        </form>
+        <div id="admin-login-message" class="notice hidden" role="status" aria-live="polite"></div>
+        <p class="field-hint admin-setup-help">No admin account yet? Create one using the <a href="../README.md">setup instructions</a>.</p>
+        <a class="auth-page-link" href="index.html">Back to customer and bank sign in</a>
+      </div>
+      <p class="auth-footnote">Administrator accounts are created by the system owner. Bank verifier access must be reviewed manually.</p>
+    </section>
+  </main>
+  <script src="admin-login.js?v=1" defer></script>
+</body>
+</html>

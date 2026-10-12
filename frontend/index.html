@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f1f6fb">
+  <title>SmartSplit – AI-Driven Adaptive Budget Allocation &amp; EMI Vault Management System</title>
+  <link rel="stylesheet" href="styles.css?v=13">
+</head>
+<body>
+  <main class="page-wrap">
+    <section id="auth-view" class="auth-shell">
+      <div class="brand-lockup">
+        <div class="brand-mark" aria-hidden="true">S</div>
+        <div><strong>SmartSplit</strong><span>AI-Driven Adaptive Budget Allocation &amp; EMI Vault Management System</span></div>
+      </div>
+      <div class="auth-card">
+        <div class="auth-intro">
+          <p class="eyebrow">YOUR MONEY, MADE CLEAR</p>
+          <h1>Make confident<br><span>money decisions.</span></h1>
+          <p>Track your budget, understand your financial habits, and share a secure verification report only when you choose.</p>
+        </div>
+        <div id="hosting-error" class="hosting-error hidden" role="alert"></div>
+        <div class="auth-tabs" role="tablist" aria-label="Account access">
+          <button type="button" class="auth-tab selected" data-auth-tab="login">Sign in</button>
+          <button type="button" class="auth-tab" data-auth-tab="register">Create account</button>
+        </div>
+        <form id="login-form" class="form-stack">
+          <label>Email address<input name="email" type="email" autocomplete="username" required maxlength="254"></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+          <button class="button primary wide" type="submit">Sign in</button>
+          <a class="auth-page-link" href="admin.html">Administrator? Sign in here</a>
+        </form>
+        <form id="register-form" class="form-stack register-form hidden">
+          <label>Your name<input name="name" autocomplete="name" required maxlength="120"></label>
+          <label>Email address<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+          <label>Password <span class="field-hint">(10–72 characters)</span><input name="password" type="password" autocomplete="new-password" required minlength="10" maxlength="72"></label>
+          <label>Account type
+            <select id="registration-role" name="role">
+              <option value="customer">Normal User (Customer)</option>
+              <option value="bank">Bank Employee (admin approval required)</option>
+            </select>
+          </label>
+          <div id="customer-registration-fields" class="role-fields">
+            <label>PAN ID <span class="field-hint">(format checked; never stored as plain text)</span>
+              <input id="pan-id" name="pan_id" type="password" autocomplete="off" autocapitalize="characters" maxlength="10" minlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]" title="Enter 5 letters, 4 digits, then 1 letter (for example ABCDE1234F)." aria-describedby="pan-help" required>
+            </label>
+            <small id="pan-help" class="field-hint">Your PAN is stored only as a SHA-256 hash; the account displays its last 4 characters.</small>
+          </div>
+          <div id="bank-registration-fields" class="role-fields hidden">
+            <label>Bank name<input name="bank_name" type="text" autocomplete="organization" maxlength="120"></label>
+            <label>Bank Employee ID <span class="field-hint">(4–32 letters or digits)</span>
+              <input id="bank-employee-id" name="bank_employee_id" type="text" autocomplete="off" minlength="4" maxlength="32" pattern="[A-Za-z0-9]{4,32}" title="Use 4–32 letters or digits.">
+            </label>
+            <small class="field-hint">Bank Employee accounts remain pending until an administrator manually verifies this ID.</small>
+          </div>
+          <button class="button primary wide" type="submit">Create account</button>
+        </form>
+        <div id="auth-message" class="notice hidden" role="status"></div>
+      </div>
+      <p class="auth-footnote">Educational prototype only — not a regulated credit assessment tool. No real bank data is processed. Never enter bank passwords or account credentials.</p>
+    </section>
+
+    <section id="app-view" class="app-shell hidden">
+      <header class="topbar">
+        <a class="brand-lockup compact" href="#" aria-label="SmartSplit home">
+          <div class="brand-mark" aria-hidden="true">S</div>
+          <div><strong>SmartSplit</strong><span>AI-Driven Adaptive Budget Allocation &amp; EMI Vault Management System</span></div>
+        </a>
+        <div class="topbar-right">
+          <span id="user-label" class="user-label"></span>
+          <button id="logout-button" class="button quiet" type="button">Sign out</button>
+        </div>
+      </header>
+      <div class="app-body">
+        <aside class="sidebar">
+          <p class="eyebrow">WORKSPACE</p>
+          <nav id="main-nav" class="main-nav" aria-label="Main navigation"></nav>
+          <div class="side-note"><span class="status-dot"></span> Private by default<br><small>You control what you share.</small></div>
+        </aside>
+        <div class="content-column">
+          <div id="toast" class="toast hidden" role="status"></div>
+          <section id="customer-view" class="role-view hidden">
+            <div class="page-heading">
+              <div><p class="eyebrow">PERSONAL FINANCE</p><h1 id="welcome-title">Good morning</h1><p>One clear view of this month's money.</p></div>
+              <label class="month-select">Month<input id="month-picker" type="month"></label>
+            </div>
+            <section class="customer-panel" data-panel="overview">
+              <div id="budget-alert" class="budget-alert hidden" role="alert" aria-live="assertive"></div>
+              <div class="summary-grid" id="summary-cards"></div>
+              <section class="customer-reference-card" aria-label="Bank verification reference">
+                <div><p class="eyebrow">YOUR PRIVATE BANK VERIFICATION ID</p><strong id="customer-reference-id">Loading…</strong><p>Share this ID together with a current consent reference. Your ID alone does not reveal any data.</p></div>
+                <button id="copy-customer-reference" class="button secondary" type="button">Copy ID</button>
+              </section>
+              <div class="overview-dashboard-grid">
+                <section class="card dashboard-panel spending-panel">
+                  <div class="dashboard-panel-heading"><h2>Spending vs Limit by Category</h2><button class="text-button" type="button" data-go="limits">Edit limits →</button></div>
+                  <div id="progress-list" class="progress-list"></div>
+                  <p id="overview-limit-alert" class="overview-limit-alert"></p>
+                </section>
+                <div class="overview-dashboard-side">
+                  <section class="card dashboard-panel vault-panel">
+                    <div class="dashboard-panel-heading"><h2>EMI Vault Status</h2><button class="text-button" type="button" data-go="entries">Manage →</button></div>
+                    <div id="overview-real-loan-list" class="overview-real-loans"></div>
+                    <div id="overview-vault-progress" class="vault-progress"></div>
+                    <div class="overview-demo-wrap"><p class="eyebrow">FAKE DEMO LOANS</p><div id="overview-demo-loan-list" class="demo-loan-grid overview-demo-grid"></div></div>
+                  </section>
+                  <section class="card dashboard-panel explanation-panel">
+                    <div class="dashboard-panel-heading"><h2>Why this score? (Explainability)</h2><button class="text-button" type="button" data-go="risk">Details →</button></div>
+                    <div id="overview-explanation" class="overview-explanation"></div>
+                  </section>
+                </div>
+              </div>
+              <div class="section-heading"><div><p class="eyebrow">BUDGET PULSE</p><h2>Notifications</h2></div><div><span id="notification-count" class="count-pill">0 unread</span> <button id="mark-notifications" class="text-button hidden" type="button">Mark as read</button></div></div>
+              <div id="notification-list" class="notification-list card"></div>
+            </section>
+
+            <section class="customer-panel hidden" data-panel="entries">
+              <div class="section-heading"><div><p class="eyebrow">SELF-REPORTED MONTHLY DATA</p><h2>Monthly finance details</h2><p>Enter amounts for the selected month. EMI is calculated from your active loan commitments below.</p></div></div>
+              <form id="finance-form" class="card form-card">
+                <div id="finance-budget-preview" class="budget-alert budget-preview hidden" role="status" aria-live="polite"></div>
+                <div class="input-grid">
+                  <label>Monthly income <span>Take-home income</span><div class="money-input"><span>₹</span><input name="income" type="number" min="0" step="0.01" required></div></label>
+                  <label>Savings goal <span>Amount you plan to save (not an expense)</span><div class="money-input"><span>₹</span><input name="savings" type="number" min="0" step="0.01" required></div></label>
+                  <label>Rent / housing <span>Monthly housing cost</span><div class="money-input"><span>₹</span><input name="rent" type="number" min="0" step="0.01" required></div></label>
+                  <label>Other expenses <span>Utilities, food, and more</span><div class="money-input"><span>₹</span><input name="other" type="number" min="0" step="0.01" required></div></label>
+                </div>
+                <div class="repayment-box">
+                  <div><strong>Repayment history</strong><span>Self-reported payments for this month; up to 60.</span></div>
+                  <label>On time<input name="on_time_payments" type="number" min="0" max="60" step="1" required></label>
+                  <label>Missed<input name="missed_payments" type="number" min="0" max="60" step="1" required></label>
+                </div>
+                <button class="button primary" type="submit">Save monthly details</button>
+              </form>
+              <div class="section-heading"><div><p class="eyebrow">LINKED TO YOUR REGISTERED PAN</p><h2>Your EMI commitments</h2><p>Active loans determine your monthly EMI total. Closed loans remain in your payment history. Entries are self-reported and are not checked against a credit bureau.</p></div><span id="emi-count" class="count-pill">0 active EMIs</span></div>
+              <p id="emi-total" class="emi-total"></p>
+              <form id="emi-form" class="card form-card">
+                <div class="input-grid">
+                  <label>Loan label <span>For example, vehicle loan</span><input name="loan_label" type="text" maxlength="100" required></label>
+                  <label>Monthly EMI amount<div class="money-input"><span>₹</span><input name="monthly_emi" type="number" min="0.01" step="0.01" required></div></label>
+                </div>
+                <button class="button primary" type="submit">Add EMI commitment</button>
+              </form>
+              <div id="emi-commitment-list" class="card table-card emi-commitment-list"></div>
+              <div class="demo-loans-section">
+                <div class="demo-loans-heading">
+                  <div><p class="eyebrow">PRACTICE WITH SAMPLE DATA</p><h2>Demo loans</h2><p>These are fake examples for exploring the UI. They never affect your real EMI total, budget, or risk score.</p></div>
+                  <span id="demo-loan-count" class="count-pill">0 active sample loans</span>
+                </div>
+                <div id="demo-loan-list" class="demo-loan-grid"></div>
+              </div>
+            </section>
+
+            <section class="customer-panel hidden" data-panel="limits">
+              <div class="section-heading"><div><p class="eyebrow">YOUR GUARDRAILS</p><h2>Set monthly limits</h2><p>You'll be notified when an amount reaches 80% and 100% of its limit. Use 0 to remove a limit.</p></div></div>
+              <form id="limits-form" class="card form-card">
+                <div class="input-grid">
+                  <label>Savings goal / limit<div class="money-input"><span>₹</span><input name="savings" type="number" min="0" step="0.01" required></div></label>
+                  <label>Loan / EMI limit<div class="money-input"><span>₹</span><input name="emi" type="number" min="0" step="0.01" required></div></label>
+                  <label>Rent / housing limit<div class="money-input"><span>₹</span><input name="rent" type="number" min="0" step="0.01" required></div></label>
+                  <label>Other expenses limit<div class="money-input"><span>₹</span><input name="other" type="number" min="0" step="0.01" required></div></label>
+                </div>
+                <button class="button primary" type="submit">Save limits</button>
+              </form>
+            </section>
+
+            <section class="customer-panel hidden" data-panel="risk">
+              <div class="section-heading"><div><p class="eyebrow">EDUCATIONAL PROTOTYPE SCORE</p><h2>Your explainable risk score</h2><p>Based on self-reported data and a synthetic Decision Tree model. This is not a CIBIL or other credit-bureau score.</p></div><button id="compute-risk" class="button primary" type="button">Compute score</button></div>
+              <div id="risk-card" class="card risk-card"><div class="empty-state">Save monthly finance details, then compute a score to see your explanation.</div></div>
+              <p class="fine-print">This score is a classroom demonstration, not a lending decision or a promise of creditworthiness.</p>
+            </section>
+
+            <section class="customer-panel hidden" data-panel="sharing">
+              <div class="section-heading"><div><p class="eyebrow">YOU'RE IN CONTROL</p><h2>Share with a bank</h2><p>Create a temporary reference that lets a bank verifier view your latest score and audit proof. It expires in 7 days.</p></div><button id="create-consent" class="button primary" type="button">Create share reference</button></div>
+              <div class="notice soft"><strong>Only share with a verifier you trust.</strong> Give the bank your SmartSplit ID and one active share reference. The reference exposes your latest educational score, explanation, self-reported monthly finances, and active/closed EMI history until it expires or you revoke access. No real CIBIL score is accessed.</div>
+              <div class="customer-reference-card compact-reference"><div><p class="eyebrow">SMARTSPLIT CUSTOMER ID</p><strong id="customer-reference-id-sharing">Loading…</strong></div><button class="button secondary" type="button" data-copy-customer-reference>Copy ID</button></div>
+              <div id="consent-list" class="consent-list"></div>
+            </section>
+          </section>
+
+          <section id="bank-view" class="role-view hidden">
+            <div class="page-heading"><div><p class="eyebrow">CONSENT-BASED VERIFICATION</p><h1>Verification portal</h1><p>Enter the customer ID and a matching, active consent reference. The customer ID alone grants no access.</p></div></div>
+            <form id="bank-lookup-form" class="card lookup-card">
+              <label>Customer SmartSplit ID<input name="customer_reference_id" required minlength="19" maxlength="19" pattern="SS-[A-Fa-f0-9]{16}" placeholder="SS-0123456789ABCDEF"></label>
+              <label>Customer consent reference<input name="reference_id" required minlength="32" maxlength="32" placeholder="32-character consent reference"></label>
+              <button class="button primary" type="submit">Verify record</button>
+            </form>
+            <div id="bank-result" class="bank-result"></div>
+            <p class="fine-print">Read-only access. No bank credentials, account logins, or live account data are requested or processed.</p>
+          </section>
+
+          <section id="admin-view" class="role-view hidden">
+            <div class="page-heading"><div><p class="eyebrow">SYSTEM ADMINISTRATION</p><h1>Admin panel</h1><p>Approve verifier access, manage accounts, and review audit activity.</p></div><button id="retrain-model" class="button secondary" type="button">Retrain synthetic model</button></div>
+            <div class="section-heading"><div><p class="eyebrow">ACCESS CONTROL</p><h2>Accounts</h2><p>Review the submitted Bank Employee ID manually before approving access. Customer PANs are shown masked only.</p></div></div>
+            <div id="admin-users" class="card table-card"></div>
+            <div class="section-heading"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Recent system events</h2></div></div>
+            <div id="admin-logs" class="card table-card"></div>
+          </section>
+        </div>
+      </div>
+      <footer class="footer-note">Educational prototype only — not a regulated credit assessment tool. No real bank data is processed. · Private, self-reported data · No live bank connections</footer>
+    </section>
+  </main>
+  <dialog id="close-emi-dialog" class="close-emi-dialog">
+    <form id="close-emi-form">
+      <h2>Close EMI commitment</h2>
+      <p id="close-emi-label" class="fine-print"></p>
+      <input name="commitment_id" type="hidden">
+      <label>Total amount paid<div class="money-input"><span>₹</span><input name="amount_paid" type="number" min="0" step="0.01" required></div></label>
+      <label>Were all EMI payments made on time?
+        <select name="paid_on_time" required>
+          <option value="">Select one</option>
+          <option value="true">Yes, all on time</option>
+          <option value="false">No, there were late payments</option>
+        </select>
+      </label>
+      <div class="dialog-actions">
+        <button class="button quiet" type="button" id="cancel-close-emi">Cancel</button>
+        <button class="button primary" type="submit">Save payment history</button>
+      </div>
+    </form>
+  </dialog>
+  <script src="app.js?v=16" defer></script>
+</body>
+</html>
